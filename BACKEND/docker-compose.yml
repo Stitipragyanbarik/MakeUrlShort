@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - APP_URL=http://localhost:3000/
+      - MONGO_URI=mongodb://mongo:27017/urlshortener
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ALLOWED_ORIGINS=http://localhost:5173
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - urlshortener
+
+  mongo:
+    image: mongo:7-jammy
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - urlshortener
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - urlshortener
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  urlshortener:
+    driver: bridge

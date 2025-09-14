@@ -1,0 +1,21 @@
+config:
+  target: "http://127.0.0.1:3000"
+  phases:
+    - duration: 10   # Warmup phase
+      arrivalRate: 50 # Start slow to warm up
+    - duration: 30   # Main test phase
+      arrivalRate: 150 # Test at 150 req/sec
+    - duration: 30   # Peak load phase
+      arrivalRate: 200 # Target 200 requests per second
+    - duration: 30   # Scale test phase
+      arrivalRate: 278 # Test at 278 requests per second (target load)
+  processor: "./load-test-processor.cjs"  # Custom processor for multiple IPs
+scenarios:
+  - name: "Create Short URL with IP rotation"
+    flow:
+      - post:
+          url: "/api/create"
+          json:
+            url: "https://example.com"
+          headers:
+            "X-Forwarded-For": "{{ ip }}"  # Rotate IPs to avoid rate limiting
