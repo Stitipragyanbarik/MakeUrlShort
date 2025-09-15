@@ -20,7 +20,7 @@ dotenv.config();
 const app = express();
 app.set('trust proxy', true);
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = process.env.HOST || '127.0.0.1';
+const HOST = process.env.HOST || '0.0.0.0';
 
 // Custom Redis-based rate limiter for 150 req/sec
 
