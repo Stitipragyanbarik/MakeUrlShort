@@ -41,7 +41,7 @@ app.use(compression());
 
 // CORS middleware - must be before other middleware
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://localhost:5174'],
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['https://make-url-short.vercel.app/', 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

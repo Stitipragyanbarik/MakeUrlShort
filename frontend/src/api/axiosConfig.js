@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
-  baseURL: import.meta.env.REACT_APP_API_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.REACT_APP_API_URL || 'https://makeurlshort.onrender.com/api',
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
