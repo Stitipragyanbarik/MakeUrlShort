@@ -5,13 +5,14 @@ dotenv.config();
 
 // Redis configuration optimized for high-throughput scalability
 const redisConfig = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379,
-  password: process.env.REDIS_PASSWORD || undefined,
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD,
   db: process.env.REDIS_DB || 0,
+  tls: {}, 
   retryDelayOnFailover: 100, // Slightly longer for stability
   maxRetriesPerRequest: 3, // Enable retries for reliability
-  lazyConnect: true, // Changed to lazyConnect to avoid startup failures
+  lazyConnect: false, // Changed to lazyConnect to avoid startup failures
   keepAlive: 30000,
   connectTimeout: 5000, // Increased to 5s for better connection stability
   commandTimeout: 2000, // Increased to 2s for complex operations
@@ -21,22 +22,9 @@ const redisConfig = {
   enableReadyCheck: true, // Enable ready check for reliability
   dropBufferSupport: false, // Enable buffer for better performance
   connectionName: 'url-shortener-scaled', // Updated connection name
-  maxRetriesPerRequest: 3, // Retry failed requests
+  maxRetriesPerRequest: 10, // Retry failed requests
   retryDelayOnFailover: 100, // Delay between retries
-  // Removed incorrect pooling options - ioredis handles connections internally
-  // For Redis Cluster (uncomment when using cluster)
-  // cluster: [
-  //   { host: '127.0.0.1', port: 7001 },
-  //   { host: '127.0.0.1', port: 7002 },
-  //   { host: '127.0.0.1', port: 7003 },
-  // ],
-  // For Redis Sentinel (uncomment when using sentinel)
-  // sentinels: [
-  //   { host: '127.0.0.1', port: 26379 },
-  //   { host: '127.0.0.1', port: 26380 },
-  //   { host: '127.0.0.1', port: 26381 },
-  // ],
-  // name: 'mymaster',
+ 
 };
 
 // Create Redis client
@@ -181,5 +169,14 @@ export const cacheService = {
     }
   }
 };
+  (async () => {
+  try {
+    const pong = await redis.ping();
+    console.log('🏓 Redis ping response:', pong); // Should print 'PONG'
+  } catch (err) {
+    console.error('❌ Redis ping failed:', err);
+  }
+})();
+
 
 export default redis;
