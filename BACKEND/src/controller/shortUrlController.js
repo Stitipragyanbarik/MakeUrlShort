@@ -22,7 +22,9 @@ export const createShortUrl=wrapAsync(async (req,res)=>{
     // Create short URL (service already has proper timeout + retries)
     const shortUrl = await createShortUrlWithoutUser(url, customShortId);
 
-    const BASE_URL = process.env.APP_URL || 'http://localhost:3000/';
+    const BASE_URL =  process.env.APP_URL?.endsWith('/') 
+                 ? process.env.APP_URL 
+                 : process.env.APP_URL + '/';
     const fullShortUrl = `${BASE_URL}${shortUrl}`;
 
     // Cache asynchronously (fire and forget)
