@@ -313,11 +313,11 @@ app.use(errorHandler);
 
 // Cluster logic removed for external load balancing
 const startServer = async (port) => {
-  const server = app.listen(port, HOST, 2048, async () => {
+  const server = app.listen(port, '0.0.0.0', async () => {
     try {
       await connectDB();
-      console.log(`🚀 Server started on http://${HOST}:${port}`);
-      console.log(`📊 Health check available at http://${HOST}:${port}/health`);
+      console.log(`🚀 Server started on http://0.0.0.0:${port}`);
+      console.log(`📊 Health check available at http://0.0.0.0:${port}/health`);
       console.log(`🔄 Rate limiting: 150 requests per second per IP`);
     } catch (err) {
       console.error('Failed to connect DB on startup:', err);
@@ -329,12 +329,8 @@ const startServer = async (port) => {
     server.headersTimeout = 7000; // 7 seconds (should be > keepAliveTimeout)
 
   }).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
-      startServer(port + 1);
-    } else {
-      console.error('HTTP server failed to start:', err);
-    }
+    console.error('HTTP server failed to start:', err);
+    process.exit(1);
   });
 
   return server;
